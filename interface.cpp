@@ -135,8 +135,6 @@ namespace interface
     for (int i = 0; i < ships.size(); i++)
       ships[i]->RemoveShipBorders(*boards[b]);
   }
-
-  void Environment::Display(int i)
   {
       if (boards.size()<=i) return;
       boards[i]->DisplayBoard();
@@ -149,8 +147,10 @@ namespace interface
     std::cout << "\tb)Add a new board" << std::endl;
     std::cout << "\tc)Place ships from a list to a board" << std::endl;
     std::cout << "\td)Show menu" << std::endl;
+    std::cout << "\te)Automatic test" << std::endl;
     std::cout << "\tq)Exit" << std::endl;
   }
+
 
   void Input(int* number, std::string note = "Enter a number", int min = INT_MIN, int max = INT_MAX)
   {
