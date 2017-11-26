@@ -5,11 +5,12 @@ namespace Ships
 {
     int SHIP_MAX_ID; //Max ID of a ship (also number of ships)
 
-    Ship::Ship(bool _vertical)
+    Ship::Ship()
     {
         std::cout << "Created a new ship." << std::endl;
         id = ++SHIP_MAX_ID; //Return the value, then increment it
-        vertical = _vertical;
+        x = -1;
+        y = -1;
 
     }
 
@@ -69,30 +70,44 @@ namespace Ships
         }
     }
 
+    bool operator <(Ship& s1, Ship& s2)
+    {
+      return (s1.GetSize() < s2.GetSize());
+    }
 
+    //Getters
+    int Ship::GetID() {return id;}
+    int Ship::GetSize() {return size;}
 
-    One_Masted::One_Masted(bool _vertical): Ship(_vertical)
+    int One_Masted::GetSize() {return 1;}
+    int Two_Masted::GetSize() {return 2;}
+    int Three_Masted::GetSize() {return 3;}
+    int Four_Masted::GetSize() {return 4;}
+
+    One_Masted::One_Masted(): Ship()
     {
         size = 1;
-        std::cout << "Created a new ship. ID: " << id << ", size: " << size << std::endl;
+        std::cout << "Created a new one-masted ship. ID: " << id << ", size: " << size << std::endl;
 
     }
-    Two_Masted::Two_Masted(bool _vertical): Ship(_vertical)
+    Two_Masted::Two_Masted(): Ship()
     {
         size = 2;
-        std::cout << "Created a new ship. ID: " << id << ", size: " << size << std::endl;
+        std::cout << "Created a new two-masted ship. ID: " << id << ", size: " << size << std::endl;
 
     }
-    Three_Masted::Three_Masted(bool _vertical): Ship(_vertical)
+    Three_Masted::Three_Masted(): Ship()
     {
         size = 3;
-        std::cout << "Created a new ship. ID: " << id << ", size: " << size << std::endl;
+        std::cout << "Created a new three-masted ship. ID: " << id << ", size: " << size << std::endl;
 
     }
-    Four_Masted::Four_Masted(bool _vertical): Ship(_vertical)
+    Four_Masted::Four_Masted(): Ship()
     {
         size = 4;
-        std::cout << "Created a new ship. ID: " << id << ", size: " << size << std::endl;
+        std::cout << "Created a new four-masted ship. ID: " << id << ", size: " << size << std::endl;
 
     }
+
+    bool ShipCompare (Ship* s1, Ship* s2) { return (*s1<*s2); }
 }

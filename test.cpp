@@ -1,17 +1,37 @@
 #include <iostream>
 #include <stdlib.h>
+#include <cstdio>
 #include "ship.h"
 #include "board.h"
+#include "interface.h"
 
 using namespace std;
 using namespace Ships;
 using namespace Boards;
+using namespace interface;
 
 int main()
 {
-    //n. of columns, then n. of rows
-    Board b= Board(10, 4);
-    b.DisplayBoard();
-    One_Masted on1 = One_Masted(false);
-    Two_Masted on2 = Two_Masted(true);
+    Environment env = Environment();
+
+    char inp;
+    do
+    {
+      ShowMenu();
+      switch(inp)
+      {
+        case 'A':
+        case 'a':
+          env.AddShip();
+        break;
+        case 'B':
+        case 'b':
+          env.AddBoard();
+        break;
+        case 'C':
+        case 'c':
+          env.PlaceShips(0);
+        break;
+      }
+    }while((inp = getchar())!='q');
 }

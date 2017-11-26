@@ -5,7 +5,6 @@
 
 namespace Ships {
 
-
     class Ship {
     protected:
         int id;
@@ -17,30 +16,40 @@ namespace Ships {
         bool CheckBoardSize(Boards::Board& b);
 
     public:
-        Ship(bool _vertical);
+        Ship();
         void PlaceShipOnBoard(Boards::Board& b, int _x, int _y);
         void TakeShipOffBoard(Boards::Board& b);
+        virtual int GetSize();
+        int GetID();
     };
+
+    bool operator <(Ship& s1, Ship& s2);
 
     class One_Masted : public Ship {
     public:
-        One_Masted(bool _vertical);
+        One_Masted();
+        int GetSize() override;
     };
 
     class Two_Masted : public Ship {
     public:
-        Two_Masted(bool _vertical);
+        Two_Masted();
+        int GetSize() override;
     };
 
     class Three_Masted : public Ship {
     public:
-        Three_Masted(bool _vertical);
+        Three_Masted();
+        int GetSize() override;
     };
 
     class Four_Masted : public Ship {
     public:
-        Four_Masted(bool _vertical);
+        Four_Masted();
+        int GetSize() override;
     };
+
+    bool ShipCompare (Ship* s1, Ship* s2);
 }
 
 #endif
