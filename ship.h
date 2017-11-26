@@ -19,6 +19,7 @@ namespace Ships {
         Ship();
         void PlaceShipOnBoard(Boards::Board& b, int _x, int _y);
         void TakeShipOffBoard(Boards::Board& b);
+        void RemoveShipBorders(Boards::Board& b);
         virtual int GetSize();
         int GetID();
     };

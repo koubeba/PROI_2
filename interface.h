@@ -19,6 +19,8 @@ namespace interface{
       void AddShip();
       void AddBoard();
       void PlaceShips(int i);
+      void RemoveShipBorders(int i);
+      void Display(int i);
   };
   void ShowMenu();
   void Input(int* number, std::string note, int min, int max);

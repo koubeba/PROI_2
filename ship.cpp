@@ -11,6 +11,7 @@ namespace Ships
         id = ++SHIP_MAX_ID; //Return the value, then increment it
         x = -1;
         y = -1;
+        vertical = false;
 
     }
 
@@ -68,6 +69,19 @@ namespace Ships
 
             }
         }
+    }
+
+    void Ship::RemoveShipBorders(Boards::Board& b)
+    {
+      if (!vertical)
+      {
+        b.removeBorder(y, y + size-1, x, vertical, id);
+
+      }
+      else
+      {
+        b.removeBorder(x, x + size-1, y, vertical, id);
+      }
     }
 
     bool operator <(Ship& s1, Ship& s2)

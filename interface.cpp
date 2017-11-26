@@ -84,6 +84,9 @@ namespace interface
 
       for (int k = ships.size()-1; k >= 0; k--)
       {
+
+        std::cout << "Figuring out for a ship " << ships[k]->GetID() << " of size " << ships[k]->GetSize() << std::endl;
+
         //If there is enough place in a row, add a ship to the row.
         ARGH: if (x+ships[k]->GetSize() < maxX)
         {
@@ -120,17 +123,32 @@ namespace interface
       //Place ships:
       for (int k=0; k<ships.size(); k++)
       {
-        ships[k]->PlaceShipOnBoard(*boards[0], xCoords[k], yCoords[y]);
+        ships[k]->PlaceShipOnBoard(*boards[0], xCoords[k], yCoords[k]);
       }
-      boards[0]->DisplayBoard();
 
   }
+
+  void Environment::RemoveShipBorders(int b)
+  {
+    std::cout << "hello" << std::endl;
+    if (boards.size()<=b) return;
+    for (int i = 0; i < ships.size(); i++)
+      ships[i]->RemoveShipBorders(*boards[b]);
+  }
+
+  void Environment::Display(int i)
+  {
+      if (boards.size()<=i) return;
+      boards[i]->DisplayBoard();
+  }
+
 
   void ShowMenu()
   {
     std::cout << "\ta)Add a new ship to the list" << std::endl;
     std::cout << "\tb)Add a new board" << std::endl;
     std::cout << "\tc)Place ships from a list to a board" << std::endl;
+    std::cout << "\td)Show menu" << std::endl;
     std::cout << "\tq)Exit" << std::endl;
   }
 
@@ -166,6 +184,7 @@ namespace interface
         }
     }
 }
+
 
 void Input(std::string* str, std::string strName = "name")
 {

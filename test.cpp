@@ -14,10 +14,10 @@ int main()
 {
     Environment env = Environment();
 
+    ShowMenu();
     char inp;
     do
     {
-      ShowMenu();
       switch(inp)
       {
         case 'A':
@@ -31,7 +31,13 @@ int main()
         case 'C':
         case 'c':
           env.PlaceShips(0);
+          env.RemoveShipBorders(0);
+          env.Display(0);
         break;
+        case 'D':
+        case 'd':
+          ShowMenu();
+          break;
       }
     }while((inp = getchar())!='q');
 }
