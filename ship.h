@@ -1,7 +1,9 @@
+#include "board.h"
+
 #ifndef DATE_H
 #define DATE_H
 
-namespace Ship {
+namespace Ships {
 
 
     class Ship {
@@ -11,28 +13,33 @@ namespace Ship {
         bool vertical; //True for vertically placed ship, False for horizontally placed one
         int size; //from 1 to 4
 
+        //Checks if the board is the right size.
+        bool CheckBoardSize(Boards::Board& b);
+
     public:
-        Ship();
+        Ship(bool _vertical);
+        void PlaceShipOnBoard(Boards::Board& b, int _x, int _y);
+        void TakeShipOffBoard(Boards::Board& b);
     };
 
-    class One_Masted : protected Ship {
+    class One_Masted : public Ship {
     public:
-        One_Masted();
+        One_Masted(bool _vertical);
     };
 
-    class Two_Masted : protected Ship {
+    class Two_Masted : public Ship {
     public:
-        Two_Masted();
+        Two_Masted(bool _vertical);
     };
 
-    class Three_Masted : protected Ship {
+    class Three_Masted : public Ship {
     public:
-        Three_Masted();
+        Three_Masted(bool _vertical);
     };
 
-    class Four_Masted : protected Ship {
+    class Four_Masted : public Ship {
     public:
-        Four_Masted();
+        Four_Masted(bool _vertical);
     };
 }
 
