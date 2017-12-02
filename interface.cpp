@@ -200,6 +200,29 @@ namespace interface
     }
   }
 
+  void Environment::AutonomicTest()
+  {
+    std::cout << "Doing an autonomic test." << std::endl;
+    std::cout << "Creating a 10x10 board." << std::endl;
+    boards.push_back(new Boards::Board(10, 10));
+    std::cout << "Displaying a board." << std::endl;
+    boards[boards.size()-1]->DisplayBoard();
+    std::cout << "Creating two one-masted ships." << std::endl;
+    ships.push_back(new Ships::One_Masted());
+    ships.push_back(new Ships::One_Masted());
+    std::cout << "Creating a two-masted ship." << std::endl;
+    ships.push_back(new Ships::Two_Masted());
+    std::cout << "Creating a three-masted ship." << std::endl;
+    ships.push_back(new Ships::Three_Masted());
+    std::cout << "Creating a four-masted ship." << std::endl;
+    ships.push_back(new Ships::Four_Masted());
+
+    std::cout << "Arranging ships on the board." << std::endl;
+    PlaceShips(boards.size()-1);
+    RemoveShipBorders(boards.size()-1);
+    boards[boards.size()-1]->DisplayBoard();
+  }
+
   void Input(int* number, std::string note = "Enter a number", int min = INT_MIN, int max = INT_MAX)
   {
     //Checking: is the given pointer not null

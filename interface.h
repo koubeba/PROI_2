@@ -23,6 +23,7 @@ namespace interface{
       void Display(int i);
       void WriteToFile();
       void ReadFromFile();
+      void AutonomicTest();
   };
   void ShowMenu();
   void Input(int* number, std::string note, int min, int max);

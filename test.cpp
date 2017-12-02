@@ -13,6 +13,7 @@ using namespace interface;
 int main()
 {
     Environment env = Environment();
+    Environment testEnv = Environment();
 
     ShowMenu();
     char inp;
@@ -37,6 +38,10 @@ int main()
         case 'D':
         case 'd':
           ShowMenu();
+          break;
+        case 'E':
+        case 'e':
+          testEnv.AutonomicTest();
           break;
         case 'F':
         case 'f':
