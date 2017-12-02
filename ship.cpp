@@ -12,7 +12,6 @@ namespace Ships
         x = -1;
         y = -1;
         vertical = false;
-
     }
 
     bool Ship::CheckBoardSize(Boards::Board& b)
@@ -33,7 +32,6 @@ namespace Ships
               y = _x;
               b.borderSpace(_x, _x + size-1, _y, vertical, id);
             }
-
         }
         else
         {
@@ -55,9 +53,7 @@ namespace Ships
               b.removeBorder(y, y + size-1, x, vertical, id);
               x = -1;
               y = -1;
-
             }
-
         }
         else
         {
@@ -66,7 +62,6 @@ namespace Ships
               b.removeBorder(x, x + size-1, y, vertical, id);
                 x = -1;
                 y = -1;
-
             }
         }
     }
@@ -76,7 +71,6 @@ namespace Ships
       if (!vertical)
       {
         b.removeBorder(y, y + size-1, x, vertical, id);
-
       }
       else
       {

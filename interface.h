@@ -21,6 +21,8 @@ namespace interface{
       void PlaceShips(int i);
       void RemoveShipBorders(int i);
       void Display(int i);
+      void WriteToFile();
+      void ReadFromFile();
   };
   void ShowMenu();
   void Input(int* number, std::string note, int min, int max);

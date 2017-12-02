@@ -38,6 +38,14 @@ int main()
         case 'd':
           ShowMenu();
           break;
+        case 'F':
+        case 'f':
+          env.WriteToFile();
+        break;
+        case 'G':
+        case 'g':
+          env.ReadFromFile();
+        break;
       }
     }while((inp = getchar())!='q');
 }

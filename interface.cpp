@@ -6,6 +6,7 @@
 #include <vector>
 #include <climits>
 #include <algorithm>
+#include <fstream>
 
 #include "interface.h"
 
@@ -16,7 +17,6 @@ namespace interface
     ships = std::vector<Ships::Ship*>();
     boards = std::vector<Boards::Board*>();
   }
-
   void Environment::AddShip()
   {
     int sailCount;
@@ -127,14 +127,12 @@ namespace interface
       }
 
   }
-
   void Environment::RemoveShipBorders(int b)
   {
     if (boards.size()<=b) return;
     for (int i = 0; i < ships.size(); i++)
       ships[i]->RemoveShipBorders(*boards[b]);
   }
-
   void Environment::Display(int b)
   {
       if (boards.size()<=b) return;
@@ -147,9 +145,60 @@ namespace interface
     std::cout << "\tc)Place ships from a list to a board" << std::endl;
     std::cout << "\td)Show menu" << std::endl;
     std::cout << "\te)Automatic test" << std::endl;
+    std::cout << "\tf)Write to file" << std::endl;
+    std::cout << "\tg)Read from file" << std::endl;
     std::cout << "\tq)Exit" << std::endl;
   }
+  void Environment::WriteToFile()
+  {
+    std::ofstream file;
+    file.open("temp.txt");
+    file << boards.size() << std::endl;
+    for (int i=0; i<boards.size(); i++)
+      file << boards[i]->GetX() << " " << boards[i]->GetY() << std::endl;
+    file << ships.size() << std::endl;
+    for (int i=0; i<ships.size(); i++)
+      file << ships[i]->GetSize() << std::endl;
+  }
+  void Environment::ReadFromFile()
+  {
+    std::ifstream file;
+    file.open("temp.txt");
+    if (file.good())
+    {
+      std::cout << "Good!" << std::endl;
+      int boardsC, shipsC, x, y;
+      file >> boardsC;
+      for (int i=0; i<boardsC; i++)
+      {
+        file >> x >> y;
+        boards.push_back(new Boards::Board(x, y));
+      }
+      file >> shipsC;
+      for (int i=0; i<shipsC; i++)
+      {
+        file >> x;
+        switch(x)
+        {
+          case 1:
+            ships.push_back(new Ships::One_Masted());
+          break;
+          case 2:
+            ships.push_back(new Ships::Two_Masted());
+          break;
+          case 3:
+            ships.push_back(new Ships::Three_Masted());
+          break;
+          case 4:
+            ships.push_back(new Ships::Four_Masted());
+          break;
+          default:
+          break;
+        }
+      }
 
+    }
+  }
 
   void Input(int* number, std::string note = "Enter a number", int min = INT_MIN, int max = INT_MAX)
   {
@@ -184,20 +233,4 @@ namespace interface
     }
 }
 
-
-void Input(std::string* str, std::string strName = "name")
-{
-    //Checking: is the given pointer not null
-    if (str)
-    {
-        //Checking: is the entered data the right type (std::string)
-        while ((std::cout << "Enter a " + strName + ": ") && !(std::cin >> *str))
-        {
-            //Clearing the input after receiving wrong data.
-            std::cin.clear();
-            std::cin.ignore(INT_MAX, '\n');
-            std::cout << "Wrong input.";
-        }
-    }
-}
 }
