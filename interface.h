@@ -24,7 +24,6 @@ namespace interface{
   };
   void ShowMenu();
   void Input(int* number, std::string note, int min, int max);
-  void Input(std::string* str, std::string strName);
 }
 
 

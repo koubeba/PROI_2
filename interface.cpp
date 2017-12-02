@@ -130,17 +130,16 @@ namespace interface
 
   void Environment::RemoveShipBorders(int b)
   {
-    std::cout << "hello" << std::endl;
     if (boards.size()<=b) return;
     for (int i = 0; i < ships.size(); i++)
       ships[i]->RemoveShipBorders(*boards[b]);
   }
+
+  void Environment::Display(int b)
   {
-      if (boards.size()<=i) return;
-      boards[i]->DisplayBoard();
+      if (boards.size()<=b) return;
+      boards[b]->DisplayBoard();
   }
-
-
   void ShowMenu()
   {
     std::cout << "\ta)Add a new ship to the list" << std::endl;
@@ -201,5 +200,4 @@ void Input(std::string* str, std::string strName = "name")
         }
     }
 }
-
 }
