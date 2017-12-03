@@ -16,50 +16,50 @@ namespace Ships
 
     bool Ship::CheckBoardSize(Boards::Board& b)
     {
-        if (vertical && b.GetY() < size)  return false;
-        if (b.GetX() < size) return false;
+        if (vertical && b.GetRows() < size)  return false;
+        if (b.GetColumns() < size) return false;
         return true;
     }
 
-    void Ship::PlaceShipOnBoard(Boards::Board& b, int _x, int _y)
+    void Ship::PlaceShipOnBoard(Boards::Board& b, int _rows, int _columns)
     {
         if (CheckBoardSize(b));
-        if (!vertical)
+        if (vertical)
         {
-            if (b.occupySpace(_x, _x + size-1, _y, vertical, id))
+            if (b.occupySpace(_rows, _rows + size-1, _columns, vertical, id))
             {
-              x = _y;
-              y = _x;
-              b.borderSpace(_x, _x + size-1, _y, vertical, id);
+              x = _rows;
+              y = _columns;
+              b.borderSpace(_rows, _rows + size-1, _columns, vertical, id);
             }
         }
         else
         {
-            if (b.occupySpace(_y, _y + size-1, _x, vertical, id))
+            if (b.occupySpace(_columns, _columns + size-1, _rows, vertical, id))
             {
-                x = _y;
-                y = _x;
-              b.borderSpace(_y, _y + size-1, _x, vertical, id);
+                x = _rows;
+                y = _columns;
+              b.borderSpace(_columns, _columns + size-1, _rows, vertical, id);
             }
         }
     }
 
     void Ship::TakeShipOffBoard(Boards::Board& b)
     {
-        if (!vertical)
+        if (vertical)
         {
-            if (b.freeSpace(y, y + size-1, x, vertical, id))
+            if (b.freeSpace(x, x + size-1, y, vertical, id))
             {
-              b.removeBorder(y, y + size-1, x, vertical, id);
+              b.removeBorder(x, x + size-1, y, vertical, id);
               x = -1;
               y = -1;
             }
         }
         else
         {
-            if (b.freeSpace(x, x + size-1, y, vertical, id))
+            if (b.freeSpace(y, y + size-1, x, vertical, id))
             {
-              b.removeBorder(x, x + size-1, y, vertical, id);
+              b.removeBorder(y, y + size-1, x, vertical, id);
                 x = -1;
                 y = -1;
             }
@@ -81,6 +81,11 @@ namespace Ships
     bool operator <(Ship& s1, Ship& s2)
     {
       return (s1.GetSize() < s2.GetSize());
+    }
+
+    void Ship::MakeVertical(bool _verticality)
+    {
+      vertical = _verticality;
     }
 
     //Getters

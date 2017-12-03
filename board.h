@@ -5,15 +5,15 @@ namespace Boards
 {
     class Board
     {
-        int x, y;
+        int rows, columns;
         int **layout;
     public:
-        Board(int _y, int _x);
+        Board(int _rows, int _columns);
         void DisplayBoard();
 
         //Getters
-        const int GetX();
-        const int GetY();
+        const int GetRows();
+        const int GetColumns();
 
         //Checks if the requested space is free.
         bool checkAvailability(int xStart, int xEnd, int _y, bool vertical);

@@ -40,90 +40,205 @@ namespace interface
   void Environment::AddBoard()
   {
     int columns, rows;
-    interface::Input(&columns, "How many columns?", 1, 100);
-    interface::Input(&rows, "How many rows?", 1, 100);
-    boards.push_back(new Boards::Board(columns, rows));
+    interface::Input(&columns, "How many columns? (1-100)", 1, 100);
+    interface::Input(&rows, "How many rows? (1-100)", 1, 100);
+    boards.push_back(new Boards::Board(rows, columns));
   }
   void Environment::PlaceShips(int i)
   {
+    std::cout << "Rows: " << boards[0]->GetRows() << " Columns: " << boards[0]->GetColumns() << std::endl;
+
     if (boards.size()==0) return;
     //TODO: Make a copy of board without border rows?
 
     //Copy the vector of ships.
     //Sort it by ships size.
     std::sort(ships.begin(), ships.end(), Ships::ShipCompare);
-    //An array of x coords for ships, and one for y coords for ship. Init it with -1.
 
-    int* xCoords;
-    int* yCoords;
-    xCoords = new int[ships.size()];
-    yCoords = new int[ships.size()];
+    //An array of row coords for ships, and one for column coords for ship. Init it with -1.
+    int* rowCoords;
+    int* columnCoords;
+    rowCoords = new int[ships.size()];
+    columnCoords = new int[ships.size()];
 
     for (int i=0; i < ships.size(); i++)
     {
-      xCoords[i] = -1;
-      yCoords[i] = -1;
+      rowCoords[i] = -1;
+      columnCoords[i] = -1;
     }
 
-    //Place the ships on board starting from the largest. Iterate until there are ships to place.
+    //Calculate maximum row and maximum columnindex
+    int maxRow, maxColumn;
+    //If there are more columns than rows, we are going to place the ships horizontally.
+    if (boards[0]->GetRows() <= boards[0]->GetColumns())
+    {
+      //The max column index is simple:
+      maxColumn = boards[0]->GetColumns();
+      //The rows are cut down by half (we will skip every second row to leave it as a border for ships.)
+      maxRow = boards[0]->GetRows() % 2 == 1 ? boards[0]->GetRows()/2 + 1 : boards[0]->GetRows()/2;
+    }
+    //If there are more rows than columns, we are going to place the ships vertically.
+    else
+    {
+      //The max row index is simple:
+      maxRow = boards[0]->GetRows();
+      //The columns are cut down by half (we will skip every second column to leave it as a border for ships.)
+      maxColumn = boards[0]->GetColumns() % 2 == 1 ? boards[0]->GetColumns()/2 + 1 : boards[0]->GetColumns()/2;
+    }
 
-      int x, y; //Current x and y
-      x = 0;
-      y = 0;
+    //An array of last index for every row/column.
+    int* lastIndex;
+    if (boards[0]->GetRows() <= boards[0]->GetColumns())
+    {
+      lastIndex = new int[maxColumn];
+      for (int i = 0; i<maxColumn; i++) lastIndex[i] = 0;
+    }
+    else
+    {
+      lastIndex = new int[maxRow];
+      for (int i = 0; i<maxRow; i++) lastIndex[i] = 0;
+    }
 
-      int maxX, maxY;
-      int* lastX;
+    int row, column; //Current x(row) and y(column)
+    row = 0;
+    column = 0;
 
-      maxX = boards[0]->GetX();
-      maxY = boards[0]->GetY() % 2 == 1 ? boards[0]->GetY()/2 + 1 : boards[0]->GetY()/2;
+    int iter = 0;
 
-      lastX = new int[maxY];
-      for (int i = 0; i<maxY; i++) lastX[i] = 0;
+    int index = ships.size()-1;
 
-      int index = ships.size()-1;
 
-      for (int k = ships.size()-1; k >= 0; k--)
+     //Place the ships on board starting from the largest. Iterate until there are ships to place.
+
+     //If there are more rows than columns, place the ships vertically (iterate through rows, then through columns):
+      if (boards[0]->GetRows() >= boards[0]->GetColumns())
       {
-
-        std::cout << "Figuring out for a ship " << ships[k]->GetID() << " of size " << ships[k]->GetSize() << std::endl;
-
-        //If there is enough place in a row, add a ship to the row.
-        ARGH: if (x+ships[k]->GetSize() < maxX)
+        //Iterate through all ships
+        for (int k = ships.size()-1; k >= 0; k--)
         {
-          xCoords[k] = x;
-          yCoords[k] = y;
+          //Zero iteration for the k-th ship
+          iter = 0;
+          //DEBUG
+          std::cout << "Figuring out for a ship " << ships[k]->GetID() << " of size " << ships[k]->GetSize() << std::endl;
+          //DEBUG
 
-          x+= ships[k]->GetSize();
-          if (x!=maxX-1) x+=1;
+          AHMM:
+          //Increase iteration by one (preventing an infinite loop)
+          iter++;
+          //DEBUG
+          std::cout << "Iter: " << iter  << "Current row: " << row << "Current column: " << column << "LAst index in column: " << lastIndex[column]<< std::endl;
+          //DEBUG
 
-          lastX[y] = x;
+          //If there is enough place in a column
+          if (lastIndex[column]+ships[k]->GetSize() <= maxRow)
+          {
+            //DEBUG
+            std::cout << "There is enough place in column" <<std::endl;
+            //DEBUG
 
-          continue;
-        }
-        else if (y+2 < maxY)
-        {
-          y+=2;
-          x = lastX[y];
-          goto ARGH;
-        }
-        else
-        {
-          y = 0;
-          x = lastX[0];
-          goto ARGH;
+            rowCoords[k] = row;
+            columnCoords[k] = column;
+
+            row+= ships[k]->GetSize();
+            //If the ship won't take up whole space in column, add one unit of border.
+            if (row!=maxColumn-1) row+=1;
+
+            //last occupied index in this row is the column
+            lastIndex[column] = row;
+
+            continue;
+          }
+          //If there isn't enough place in a column, jump to the next column.
+          else if (column+2 <= maxColumn)
+          {
+            //DEBUG
+            std::cout << "Moving on to next column" <<std::endl;
+            //DEBUG
+            column+=2;
+            row = lastIndex[column];
+            goto AHMM;
+          }
+          //If there isn't enough place in the last column, start all over
+          else
+          {
+            //DEBUG
+            std::cout << "Starting all over" <<std::endl;
+            //DEBUG
+            column = 0;
+            row = lastIndex[0];
+            if (iter>=(2*maxColumn)+1) continue;
+            goto AHMM;
+          }
         }
       }
+      //If there is more columns than rows, place the ships horizontally
+      else
+      {
+        //Iterate through all ships
+        for (int k = ships.size()-1; k >= 0; k--)
+        {
+          iter = 0;
+          //DEBUG
+          std::cout << "Figuring out for a ship " << ships[k]->GetID() << " of size " << ships[k]->GetSize() << std::endl;
+          //DEBUG
 
-      //test:
+          //If there is enough place in a row, add a ship to the row. (Iterate through columns, then through rows)
+          ARGH:
+          iter++;
+          //DEBUG
+          std::cout << "Iter: " << iter << std::endl;
+          //DEBUG
+          if (lastIndex[row]+ships[k]->GetSize() <= maxColumn)
+          {
+            rowCoords[k] = row;
+            columnCoords[k] = column;
+
+            column += ships[k]->GetSize();
+            //If the ship doesn't take all space in the row, add one unit of border.
+            if (column!=maxRow-1) column+=1;
+
+            lastIndex[row] = column;
+
+            continue;
+          }
+          //If there isn't enough place in row, move on to the next one.
+          else if (row+2 <= maxRow)
+          {
+            row+=2;
+            column = lastIndex[row];
+            goto ARGH;
+          }
+          //If there isn't enogh place in last row, start all over.
+          else
+          {
+            row = 0;
+            column = lastIndex[0];
+            if (iter>=(2*maxRow)+1) continue;
+            goto ARGH;
+          }
+        }
+      }
+      std::cout << "Calculated all ships:" <<std::endl;
+
+      /*test:
       for(int i=0; i<ships.size(); i++)
       {
         std::cout << "A ship size: " << ships[i]->GetSize() << " ,x: " << xCoords[i] << " ,y " << yCoords[i] << std::endl;
-      }
+      }*/
 
+      //If there is more columns than rows, place the ships horizontally.
+      if (boards[0]->GetRows() <= boards[0]->GetColumns())
+        for (int k=0; k<ships.size(); k++)
+          ships[k]->MakeVertical(false);
+      else
+        for (int k=0; k<ships.size(); k++)
+          ships[k]->MakeVertical(true);
+
+      std::cout << "Place the ships:" <<std::endl;
       //Place ships:
       for (int k=0; k<ships.size(); k++)
       {
-        ships[k]->PlaceShipOnBoard(*boards[0], xCoords[k], yCoords[k]);
+        ships[k]->PlaceShipOnBoard(*boards[0], rowCoords[k], columnCoords[k]);
       }
 
   }
@@ -155,7 +270,7 @@ namespace interface
     file.open("temp.txt");
     file << boards.size() << std::endl;
     for (int i=0; i<boards.size(); i++)
-      file << boards[i]->GetX() << " " << boards[i]->GetY() << std::endl;
+      file << boards[i]->GetRows() << " " << boards[i]->GetColumns() << std::endl;
     file << ships.size() << std::endl;
     for (int i=0; i<ships.size(); i++)
       file << ships[i]->GetSize() << std::endl;
@@ -167,18 +282,18 @@ namespace interface
     if (file.good())
     {
       std::cout << "Good!" << std::endl;
-      int boardsC, shipsC, x, y;
+      int boardsC, shipsC, rows, columns;
       file >> boardsC;
       for (int i=0; i<boardsC; i++)
       {
-        file >> x >> y;
-        boards.push_back(new Boards::Board(x, y));
+        file >> rows >> columns;
+        boards.push_back(new Boards::Board(rows, columns));
       }
       file >> shipsC;
       for (int i=0; i<shipsC; i++)
       {
-        file >> x;
-        switch(x)
+        file >> rows;
+        switch(rows)
         {
           case 1:
             ships.push_back(new Ships::One_Masted());
@@ -216,8 +331,6 @@ namespace interface
     ships.push_back(new Ships::Three_Masted());
     std::cout << "Creating a four-masted ship." << std::endl;
     ships.push_back(new Ships::Four_Masted());
-
-    std::cout << "Arranging ships on the board." << std::endl;
     PlaceShips(boards.size()-1);
     RemoveShipBorders(boards.size()-1);
     boards[boards.size()-1]->DisplayBoard();

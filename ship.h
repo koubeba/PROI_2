@@ -22,6 +22,7 @@ namespace Ships {
         void RemoveShipBorders(Boards::Board& b);
         virtual int GetSize();
         int GetID();
+        void MakeVertical(bool _verticality);
     };
 
     bool operator <(Ship& s1, Ship& s2);
