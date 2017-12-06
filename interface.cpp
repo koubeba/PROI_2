@@ -7,6 +7,7 @@
 #include <climits>
 #include <algorithm>
 #include <fstream>
+#include <string>
 
 #include "interface.h"
 
@@ -17,6 +18,16 @@ namespace interface
     ships = std::vector<Ships::Ship*>();
     boards = std::vector<Boards::Board*>();
   }
+
+  const int Environment::GetShips()
+  {
+    return ships.size();
+  }
+  const int Environment::GetBoards()
+  {
+    return boards.size();
+  }
+
   void Environment::AddShip()
   {
     int sailCount;
@@ -44,7 +55,7 @@ namespace interface
     interface::Input(&rows, "How many rows? (1-100)", 1, 100);
     boards.push_back(new Boards::Board(rows, columns));
   }
-  void Environment::PlaceShips(int i)
+  void Environment::PlaceShips(int j)
   {
     std::cout << "Rows: " << boards[0]->GetRows() << " Columns: " << boards[0]->GetColumns() << std::endl;
 
@@ -73,7 +84,7 @@ namespace interface
     if (boards[0]->GetRows() <= boards[0]->GetColumns())
     {
       //The max column index is simple:
-      maxColumn = boards[0]->GetColumns();
+      maxColumn = boards[0]->GetColumns()-1;
       //The rows are cut down by half (we will skip every second row to leave it as a border for ships.)
       maxRow = boards[0]->GetRows() % 2 == 1 ? boards[0]->GetRows()/2 + 1 : boards[0]->GetRows()/2;
     }
@@ -81,7 +92,7 @@ namespace interface
     else
     {
       //The max row index is simple:
-      maxRow = boards[0]->GetRows();
+      maxRow = boards[0]->GetRows()-1;
       //The columns are cut down by half (we will skip every second column to leave it as a border for ships.)
       maxColumn = boards[0]->GetColumns() % 2 == 1 ? boards[0]->GetColumns()/2 + 1 : boards[0]->GetColumns()/2;
     }
@@ -107,11 +118,14 @@ namespace interface
 
     int index = ships.size()-1;
 
+    //DEBUG
+    std::cout << "Max column: " << maxColumn << " max row: " << maxRow << std::endl;
+    //DEBUG
 
      //Place the ships on board starting from the largest. Iterate until there are ships to place.
 
      //If there are more rows than columns, place the ships vertically (iterate through rows, then through columns):
-      if (boards[0]->GetRows() >= boards[0]->GetColumns())
+      if (boards[0]->GetRows() > boards[0]->GetColumns())
       {
         //Iterate through all ships
         for (int k = ships.size()-1; k >= 0; k--)
@@ -141,11 +155,16 @@ namespace interface
 
             row+= ships[k]->GetSize();
             //If the ship won't take up whole space in column, add one unit of border.
-            if (row!=maxColumn-1) row+=1;
+            if (row<maxRow)
+            {
+              //DEBUG//
+              std::cout << "Adding one unit of border" <<std::endl;
+              //DEBUG//
+              row+=1;
+            }
 
             //last occupied index in this row is the column
             lastIndex[column] = row;
-
             continue;
           }
           //If there isn't enough place in a column, jump to the next column.
@@ -188,14 +207,26 @@ namespace interface
           //DEBUG
           std::cout << "Iter: " << iter << std::endl;
           //DEBUG
+          //DEBUG
+          std::cout << "Iter: " << iter  << "Current row: " << row << "Current column: " << column << "LAst index in column: " << lastIndex[column]<< std::endl;
+          //DEBUG
           if (lastIndex[row]+ships[k]->GetSize() <= maxColumn)
           {
+            //DEBUG
+            std::cout << "There is enough place in column" <<std::endl;
+            //DEBUG
             rowCoords[k] = row;
             columnCoords[k] = column;
 
             column += ships[k]->GetSize();
             //If the ship doesn't take all space in the row, add one unit of border.
-            if (column!=maxRow-1) column+=1;
+            if (column<maxColumn)
+            {
+              //DEBUG//
+              std::cout << "Adding one unit of border" << std::endl;
+              //DEBUG//
+              column+=1;
+            }
 
             lastIndex[row] = column;
 
@@ -204,6 +235,9 @@ namespace interface
           //If there isn't enough place in row, move on to the next one.
           else if (row+2 <= maxRow)
           {
+            //DEBUG
+            std::cout << "Moving on to next column" <<std::endl;
+            //DEBUG
             row+=2;
             column = lastIndex[row];
             goto ARGH;
@@ -211,6 +245,9 @@ namespace interface
           //If there isn't enogh place in last row, start all over.
           else
           {
+            //DEBUG
+            std::cout << "Starting all over" <<std::endl;
+            //DEBUG
             row = 0;
             column = lastIndex[0];
             if (iter>=(2*maxRow)+1) continue;
@@ -267,18 +304,29 @@ namespace interface
   void Environment::WriteToFile()
   {
     std::ofstream file;
-    file.open("temp.txt");
+    std::string name;
+    std::cout << "Give a file name: ";
+    std::cin >> name;
+    file.open(name.c_str());
+    if (file.good())
+      std::cout << "File is correct!" <<std::endl;
+    else
+    {
+      std::cout << "File is wrong!" << std::endl;
+      return;
+    }
     file << boards.size() << std::endl;
     for (int i=0; i<boards.size(); i++)
       file << boards[i]->GetRows() << " " << boards[i]->GetColumns() << std::endl;
     file << ships.size() << std::endl;
     for (int i=0; i<ships.size(); i++)
       file << ships[i]->GetSize() << std::endl;
+    file.close();
   }
-  void Environment::ReadFromFile()
+  void Environment::ReadFromFile(char* str)
   {
     std::ifstream file;
-    file.open("temp.txt");
+    file.open(str);
     if (file.good())
     {
       std::cout << "Good!" << std::endl;
@@ -311,8 +359,10 @@ namespace interface
           break;
         }
       }
-
+      file.close();
+      return;
     }
+    std::cout << "File is incorrect!" << std::endl;
   }
 
   void Environment::AutonomicTest()
@@ -367,6 +417,14 @@ namespace interface
             }
         }
     }
-}
+  }
+
+  template <class T>
+  void swap(T& t1, T& t2)
+  {
+        T buf = t1;
+        t1 = t2;
+        t2 = buf;
+    }
 
 }

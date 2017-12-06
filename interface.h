@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 #include <climits>
+#include <string>
 
 #ifndef INTERFACE_H
 #define INTERFACE_H
@@ -16,13 +17,16 @@ namespace interface{
       std::vector<Boards::Board*> boards;
     public:
       Environment();
+      //Getters
+      const int GetShips();
+      const int GetBoards();
       void AddShip();
       void AddBoard();
       void PlaceShips(int i);
       void RemoveShipBorders(int i);
       void Display(int i);
       void WriteToFile();
-      void ReadFromFile();
+      void ReadFromFile(char* str);
       void AutonomicTest();
   };
   void ShowMenu();

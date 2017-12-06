@@ -10,7 +10,7 @@ using namespace Ships;
 using namespace Boards;
 using namespace interface;
 
-int main()
+int main(int argc, char** argv)
 {
     Environment env = Environment();
     Environment testEnv = Environment();
@@ -31,6 +31,11 @@ int main()
         break;
         case 'C':
         case 'c':
+        if (env.GetShips() == 0 || env.GetBoards() == 0)
+        {
+          std::cout << "Error! No boards or ships." << std::endl;
+          break;
+        }
           env.PlaceShips(0);
           env.RemoveShipBorders(0);
           env.Display(0);
@@ -49,7 +54,12 @@ int main()
         break;
         case 'G':
         case 'g':
-          env.ReadFromFile();
+          if (argc < 2)
+          {
+            std::cout << "Error! No file name" << std::endl;
+            break;
+          }
+          env.ReadFromFile(argv[1]);
         break;
       }
     }while((inp = getchar())!='q');
