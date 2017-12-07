@@ -203,6 +203,7 @@ namespace Boards
 
     bool Board::removeBorder(int xStart, int xEnd, int _y, bool vertical, int ID)
     {
+		std::cout << "Removing ship borders for a ship " << ID << std::endl;
       //border top
       freeSpace(xStart-1,xStart-1, _y, vertical, -ID);
       //borders left and right
