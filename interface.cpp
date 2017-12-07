@@ -298,6 +298,7 @@ namespace interface
     std::cout << "\te)Automatic test" << std::endl;
     std::cout << "\tf)Write to file" << std::endl;
     std::cout << "\tg)Read from file" << std::endl;
+    std::cout << "\th)Display a board" << std::endl;
     std::cout << "\tq)Exit" << std::endl;
   }
   void Environment::WriteToFile()

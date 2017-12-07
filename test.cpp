@@ -38,7 +38,7 @@ int main(int argc, char** argv)
           std::cout << "Error! No boards or ships." << std::endl;
           break;
         }
-          Input(&i, "Board index: ", 0, env.GetBoards());
+          Input(&i, "Board index: ", 0, env.GetBoards()-1);
           env.PlaceShips(i);
           env.RemoveShipBorders(i);
           env.Display(i);
@@ -54,6 +54,16 @@ int main(int argc, char** argv)
         case 'F':
         case 'f':
           env.WriteToFile();
+        break;
+        case 'h':
+        case 'H':
+        if (env.GetBoards() == 0) 
+        {
+			std::cout << "No boards to show!"<<std::endl;
+			break;
+		}
+        Input(&i, "Board index: ", 0, env.GetBoards()-1);
+        env.Display(i);
         break;
         case 'G':
         case 'g':
