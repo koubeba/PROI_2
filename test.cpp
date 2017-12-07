@@ -14,6 +14,8 @@ int main(int argc, char** argv)
 {
     Environment env = Environment();
     Environment testEnv = Environment();
+    
+    int i;
 
     ShowMenu();
     char inp;
@@ -36,9 +38,10 @@ int main(int argc, char** argv)
           std::cout << "Error! No boards or ships." << std::endl;
           break;
         }
-          env.PlaceShips(0);
-          env.RemoveShipBorders(0);
-          env.Display(0);
+          Input(&i, "Board index: ", 0, env.GetBoards());
+          env.PlaceShips(i);
+          env.RemoveShipBorders(i);
+          env.Display(i);
         break;
         case 'D':
         case 'd':

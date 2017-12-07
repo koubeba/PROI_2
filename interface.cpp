@@ -55,12 +55,11 @@ namespace interface
     interface::Input(&rows, "How many rows? (1-100)", 1, 100);
     boards.push_back(new Boards::Board(rows, columns));
   }
-  void Environment::PlaceShips(int j)
+  void Environment::PlaceShips(int i)
   {
-    std::cout << "Rows: " << boards[0]->GetRows() << " Columns: " << boards[0]->GetColumns() << std::endl;
-
+	  
     if (boards.size()==0) return;
-    //TODO: Make a copy of board without border rows?
+    //std::cout << "Rows: " << boards[0]->GetRows() << " Columns: " << boards[0]->GetColumns() << std::endl;
 
     //Copy the vector of ships.
     //Sort it by ships size.
@@ -81,25 +80,25 @@ namespace interface
     //Calculate maximum row and maximum columnindex
     int maxRow, maxColumn;
     //If there are more columns than rows, we are going to place the ships horizontally.
-    if (boards[0]->GetRows() <= boards[0]->GetColumns())
+    if (boards[i]->GetRows() <= boards[i]->GetColumns())
     {
       //The max column index is simple:
-      maxColumn = boards[0]->GetColumns()-1;
+      maxColumn = boards[i]->GetColumns()-1;
       //The rows are cut down by half (we will skip every second row to leave it as a border for ships.)
-      maxRow = boards[0]->GetRows() % 2 == 1 ? boards[0]->GetRows()/2 + 1 : boards[0]->GetRows()/2;
+      maxRow = boards[i]->GetRows() % 2 == 1 ? boards[i]->GetRows()/2 + 1 : boards[i]->GetRows()/2;
     }
     //If there are more rows than columns, we are going to place the ships vertically.
     else
     {
       //The max row index is simple:
-      maxRow = boards[0]->GetRows()-1;
+      maxRow = boards[i]->GetRows()-1;
       //The columns are cut down by half (we will skip every second column to leave it as a border for ships.)
-      maxColumn = boards[0]->GetColumns() % 2 == 1 ? boards[0]->GetColumns()/2 + 1 : boards[0]->GetColumns()/2;
+      maxColumn = boards[i]->GetColumns() % 2 == 1 ? boards[i]->GetColumns()/2 + 1 : boards[i]->GetColumns()/2;
     }
 
     //An array of last index for every row/column.
     int* lastIndex;
-    if (boards[0]->GetRows() <= boards[0]->GetColumns())
+    if (boards[i]->GetRows() <= boards[i]->GetColumns())
     {
       lastIndex = new int[maxColumn];
       for (int i = 0; i<maxColumn; i++) lastIndex[i] = 0;
@@ -125,7 +124,7 @@ namespace interface
      //Place the ships on board starting from the largest. Iterate until there are ships to place.
 
      //If there are more rows than columns, place the ships vertically (iterate through rows, then through columns):
-      if (boards[0]->GetRows() > boards[0]->GetColumns())
+      if (boards[i]->GetRows() > boards[i]->GetColumns())
       {
         //Iterate through all ships
         for (int k = ships.size()-1; k >= 0; k--)
@@ -264,7 +263,7 @@ namespace interface
       }*/
 
       //If there is more columns than rows, place the ships horizontally.
-      if (boards[0]->GetRows() <= boards[0]->GetColumns())
+      if (boards[i]->GetRows() <= boards[i]->GetColumns())
         for (int k=0; k<ships.size(); k++)
           ships[k]->MakeVertical(false);
       else
@@ -275,7 +274,7 @@ namespace interface
       //Place ships:
       for (int k=0; k<ships.size(); k++)
       {
-        ships[k]->PlaceShipOnBoard(*boards[0], rowCoords[k], columnCoords[k]);
+        ships[k]->PlaceShipOnBoard(*boards[i], rowCoords[k], columnCoords[k]);
       }
 
   }
